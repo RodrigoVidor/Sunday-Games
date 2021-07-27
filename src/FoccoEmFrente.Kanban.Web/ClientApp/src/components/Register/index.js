@@ -1,3 +1,3 @@
-import Login from './register';
+import Register from './register';
 
 export default Register;

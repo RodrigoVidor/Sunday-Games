@@ -1,53 +1,61 @@
-import React from "react";
+import React, { useState } from "react";
+import Content from "../Interface/Content";
+import Paragrafo from "../Interface/Paragrafo";
+import FormInput from "../Interface/FormInput";
+import Botao from "../Interface/Botao";
 
 export default function Register({history}) {
 
+   const [email, setEmail] = useState ("");
+   const [password, setPassword] = useState ("");
+   const [confirmPassword, setConfirmPassword] = useState ("");
+
+
+   const OnRegister = async (event) => {
+      event.preventDefault();
+
+      const response = await fetch("/api/account/register", {
+         method: "POST",
+         headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+         },
+         body: JSON.stringify({
+            email: email,
+            password: password,
+            confirmPassword: confirmPassword
+         })
+         
+      });
+
+      const responseContent = await response.json();
+
+      if (!response.ok)
+      {
+         window.alert(responseContent);
+         return;
+      }
+
+      localStorage.setItem("token", responseContent);
+      history.push("/");
+
+   };
+
     const onVoltar = () => {
-
-        history.push("/login");
-
-    }
-
-    function Content() {
-      //return (<div>style={{width: "450px"}}</div>)
-   }
-   function Paragrafo() {
-      return <p>Bem vindo ao <strong>Sunday-Games.com</strong>, o melhor sistema para gestão fe games.</p>
-   }
-   function FormInput() {
-      return <div></div>
-   }
-   function Botao() {
-      return <div></div>
-   }
+       history.push("/login");
+    };
 
 
     return (
-        <Content width={450}>
+        <Content width="450px">
            <Paragrafo>Crie uma conta no <strong>Sunday-Games.com</strong></Paragrafo>
-           <form>
-              <FormInput id="email" type="email" placeholder="E-mail" label="E-mail"/>
-              <FormInput id="senha" type="password" placeholder="Insira sua Senha" label="Senha"/>
-              <FormInput id="senha-conf" type="password" placeholder="Confirme sua Senha" label="Senha-conf"/>
+           <form onSubmit={OnRegister}>
+              <FormInput id="email" type="email" placeholder="E-mail" label="E-mail" value={email} onChange={(event) => setEmail(event.target.value)}/>
+              <FormInput id="senha" type="password" placeholder="Insira sua Senha" label="Password" value={password} onChange={(event) => setPassword(event.target.value)}/>
+              <FormInput id="senha-conf" type="password" placeholder="Confirme sua Senha" label="confirmPassword" value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)}/>
               <Botao text="Registrar" submit />
-              <Botao text="Voltar" type="secondary"/>
+              <Botao text="Voltar" type="secondary" onClick={onVoltar}/>
            </form>
         </Content>
      );
-/*
-   return (
-      <div style={{width: "450px"}}>
-         <p>Crie uma conta no <strong>Sunday-Games.com</strong></p>
-         <form>
-            <label htmlFor="email">E-mail</label>
-            <input id="email" type="email" placeholder="E-mail" />
-            <label htmlFor="senha">Senha</label>
-            <input id="senha" type="password" placeholder="Insira sua senha" />
-            <label htmlFor="confirm-password">Confirmar senha</label>
-            <input id="confirm-password" type="password" placeholder="Confirmar senha" />
-            <button className="btn btn-primary" type="submit">Registrar</button>
-            <button className="btn btn-secondary" onClick={onVoltar}>Voltar</button>
-         </form>
-      </div>
-   );*/
 }

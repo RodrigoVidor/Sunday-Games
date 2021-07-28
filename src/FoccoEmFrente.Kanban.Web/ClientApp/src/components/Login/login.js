@@ -1,51 +1,61 @@
 import React, { useState } from "react";
+import Content from "../Interface/Content";
+import Paragrafo from "../Interface/Paragrafo";
+import FormInput from "../Interface/FormInput";
+import Botao from "../Interface/Botao";
 
 export default function Login({history}) {
 
-   const desc = useState("Bem vindo ao <strong>Sunday-Games.com</strong>, o melhor sistema para gestão de games.");
+   const [formLogin, setFormLogin] = useState ({email:"", password:""});
+
+   const setEmail = (event) => {
+      setFormLogin({...formLogin, email: event.target.value});
+   }
+
+   const setPassword = (event) => {
+      setFormLogin({...formLogin, password: event.target.value});
+   }
 
    const onRegister = () => {
 
       history.push("/register");
 
    }
-   
-   function Content(props) {
-      return (
-         <div style={{width: "450px"}}>
-            {props.children}
-         </div>
-      );
-   }
-   function Paragrafo(props) {
-      return (
-         <p>
-            {props.descricao}
-         </p>
-      );
-   }
-   function FormInput(props) {
-      return (<>
-         <label>{props.id, props.type, props.placeholder, props.label}</label>
-         <input /> 
-         </>
-      );
+
+   const onLogin = async (event) => {
+      event.preventDefault();
+
+      const response = await fetch("/api/account/login", {
+         method: "POST",
+         headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+         },
+         body: JSON.stringify(formLogin)
+         
+      });
+
+      const responseContent = await response.json();
+
+      if (!response.ok)
+      {
+         window.alert(responseContent);
+         return;
+      }
+
+      localStorage.setItem("token", responseContent);
+      history.push("/");
    }
 
-   function Botao(props) {
-      return (
-         <button>{props.text}</button>
-      );
-   }
-
+     
    return (
-      <Content>
-         <Paragrafo descricao={desc}></Paragrafo>
-         <form>
-            <FormInput id="email" type="email" placeholder="E-mail" label="E-mail"/>
-            <FormInput id="senha" type="password" placeholder="Insira sua Senha" label="Senha"/>
+      <Content width="450px">
+         <Paragrafo>Bem vindo ao <strong>Sunday-Games.com</strong>, o melhor sistema para gestão de games.</Paragrafo>
+         <form onSubmit={onLogin}>
+            <FormInput id="email" type="email" placeholder="E-mail" label="E-mail" value={formLogin.email} onChange={setEmail}/>
+            <FormInput id="senha" type="password" placeholder="Insira sua Senha" label="Senha" value={formLogin.password} onChange={setPassword}/>
             <Botao text="Entrar" submit />
-            <Botao text="Registrar" type="secondary"/>
+            <Botao text="Registrar" type="secondary" onClick={onRegister}/>
          </form>
       </Content>
    );

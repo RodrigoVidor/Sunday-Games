@@ -1,10 +1,17 @@
 import React from "react";
 
- export default function FormInput(props) {
-    return (<>
-       <label>{props.id, props.type, props.placeholder}</label>
-
-       <input type={props.type} placeholder={props.placeholder} value={props.value} /> 
-       </>
-    );
- }
+export default function FormInput(props) {
+   const {id, label, type, placeholder, value, onChange} = props;
+  return (
+    <>
+      <label for={id}>{label}</label>
+      <input
+        id={id}
+        type={type}
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+      />
+    </>
+  );
+}

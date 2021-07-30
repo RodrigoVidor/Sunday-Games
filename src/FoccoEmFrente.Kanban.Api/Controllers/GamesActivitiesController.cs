@@ -73,11 +73,32 @@ namespace FoccoEmFrente.Kanban.Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult ExcluirById(Guid id)
+        public async Task<IActionResult> ExcluirById(Guid id)
         {
-            var newGamesActivity = _gamesActivityService.RemoveAsync(id, UserId);
+            var newGamesActivity = await _gamesActivityService.RemoveAsync(id, UserId);
             return Ok(newGamesActivity);
         }
+
+        [HttpPut("{id}/todo")]
+        public async Task<IActionResult> AtualizarStatusParaTodo(Guid id)
+        {
+            var gmesActivity = await _gamesActivityService.UpdateToTodoAsync(id, UserId);
+            return Ok(gmesActivity);
+        }
+        [HttpPut("{id}/doing")]
+        public async Task<IActionResult> AtualizarStatusParaDoing(Guid id)
+        {
+            var gmesActivity = await _gamesActivityService.UpdateToDoingAsync(id, UserId);
+            return Ok(gmesActivity);
+        }
+        [HttpPut("{id}/done")]
+        public async Task<IActionResult> AtualizarStatusParaDone(Guid id)
+        {
+            var gmesActivity = await _gamesActivityService.UpdateToDoneAsync(id, UserId);
+            return Ok(gmesActivity);
+        }
+
+
 
     }
 }

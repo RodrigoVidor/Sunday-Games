@@ -4,7 +4,7 @@ export default function FormInput(props) {
    const {id, label, type, placeholder, value, onChange} = props;
   return (
     <>
-      <label for={id}>{label}</label>
+      <label htmlFor={id}>{label}</label>
       <input
         id={id}
         type={type}

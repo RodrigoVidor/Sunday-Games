@@ -3,6 +3,7 @@ import Content from "../Interface/Content";
 import Paragrafo from "../Interface/Paragrafo";
 import FormInput from "../Interface/FormInput";
 import Botao from "../Interface/Botao";
+import HttpRequest from "../../utils/HttpRequest";
 
 export default function Register({ history }) {
   const [email, setEmail] = useState("");
@@ -12,27 +13,20 @@ export default function Register({ history }) {
   const OnRegister = async (event) => {
     event.preventDefault();
 
-    const response = await fetch("/api/account/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify({
+    const response = await new HttpRequest("account/register ", "POST")
+      .setBody({
         email: email,
         password: password,
-        confirmPassword: confirmPassword,
-      }),
-    });
-
-    const responseContent = await response.json();
+        confirmPassword: confirmPassword
+      })
+      .send();
 
     if (!response.ok) {
-      window.alert(responseContent);
+      window.alert(response.errorMessage);
       return;
     }
 
-    localStorage.setItem("token", responseContent);
+    localStorage.setItem("token", response.data);
     history.push("/");
   };
 
@@ -66,12 +60,12 @@ export default function Register({ history }) {
           id="senha-conf"
           type="password"
           placeholder="Confirme sua Senha"
-          label="confirmPassword"
+          label="Confirmar senha"
           value={confirmPassword}
           onChange={(event) => setConfirmPassword(event.target.value)}
         />
-        <Botao text="Registrar" submit />
-        <Botao text="Voltar" type="secondary" onClick={onVoltar} />
+        <Botao className="btn btn-primary" text="Registrar" submit />
+        <Botao className="btn btn-secondary" text="Voltar" type="secondary" onClick={onVoltar} />
       </form>
     </Content>
   );

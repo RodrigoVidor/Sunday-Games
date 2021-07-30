@@ -3,6 +3,7 @@ import Content from "../Interface/Content";
 import Paragrafo from "../Interface/Paragrafo";
 import FormInput from "../Interface/FormInput";
 import Botao from "../Interface/Botao";
+import HttpRequest from "../../utils/HttpRequest";
 
 export default function Login({ history }) {
   const [formLogin, setFormLogin] = useState({ email: "", password: "" });
@@ -22,23 +23,16 @@ export default function Login({ history }) {
   const onLogin = async (event) => {
     event.preventDefault();
 
-    const response = await fetch("/api/account/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(formLogin),
-    });
-
-    const responseContent = await response.json();
+    const response = await new HttpRequest("account/login", "POST")
+      .setBody(formLogin)
+      .send();
 
     if (!response.ok) {
-      window.alert(responseContent);
+      window.alert(response.errorMessage);
       return;
     }
 
-    localStorage.setItem("token", responseContent);
+    localStorage.setItem("token", response.data);
     history.push("/");
   };
 
@@ -65,8 +59,13 @@ export default function Login({ history }) {
           value={formLogin.password}
           onChange={setPassword}
         />
-        <Botao text="Entrar" submit />
-        <Botao text="Registrar" type="secondary" onClick={onRegister} />
+        <Botao className="btn btn-primary" text="Entrar" submit />
+        <Botao
+          className="btn btn-secondary"
+          text="Registrar"
+          type="secondary"
+          onClick={onRegister}
+        />
       </form>
     </Content>
   );

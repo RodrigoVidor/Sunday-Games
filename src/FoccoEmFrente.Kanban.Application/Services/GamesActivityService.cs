@@ -1,4 +1,5 @@
 ﻿using FoccoEmFrente.Kanban.Application.Entities;
+using FoccoEmFrente.Kanban.Application.Enum;
 using FoccoEmFrente.Kanban.Application.Repositories;
 using System;
 using System.Collections.Generic;
@@ -71,7 +72,27 @@ namespace FoccoEmFrente.Kanban.Application.Services
             return newGame;
         }
 
+        public async Task<GamesActivity> UpdateToTodoAsync(Guid id, Guid userId)
+        {
+            return await UpdateStatusAsync(id, userId, ActivityStatus.Todo);
+        }
 
+        public async Task<GamesActivity> UpdateToDoingAsync(Guid id, Guid userId)
+        {
+            return await UpdateStatusAsync(id, userId, ActivityStatus.Doing);
+        }
+        public async Task<GamesActivity> UpdateToDoneAsync(Guid id, Guid userId)
+        {
+            return await UpdateStatusAsync(id, userId, ActivityStatus.Done);
+        }
+
+        public async Task<GamesActivity> UpdateStatusAsync(Guid id, Guid userId, ActivityStatus status)
+        {
+            var gameActivity = await GetByIdAsync(id, userId);
+
+            gameActivity.Status = status;
+            return await UpdateAsync(gameActivity);
+        }
         public void Dispose()
         {
             GC.SuppressFinalize(this);

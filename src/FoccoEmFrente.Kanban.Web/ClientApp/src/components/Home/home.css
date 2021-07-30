@@ -50,7 +50,7 @@
 }
 
 /* Estilo remover atividade */
-.btn-delete-activity {
+.btn-del-game {
     padding: 0;
     width: 15px;
     height: 15px;
@@ -61,6 +61,6 @@
     border-radius: 4px;
  }
 
- .btn-delete-activity:hover {
+ .btn-del-game:hover {
     background-color: #e6e6e6;
  }
